@@ -4,6 +4,10 @@ import java.util.*;
 
 import javax.servlet.ServletException;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.config.IniSecurityManagerFactory;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.util.Factory;
 import org.tigris.subversion.javahl.ClientException;
 
 import models.Project;
@@ -23,8 +27,15 @@ public class Global extends GlobalSettings {
     public void onStart(Application app) {
         InitialData.insert(app);
         InitialData.makeUploadFolder();
-//        InitialData.makeTestRepository();
-//        UserApp.anonymous = User.findByLoginId("anonymous");
+        InitialData.makeTestRepository();
+        UserApp.anonymous = User.findByLoginId("anonymous");
+        InitializeSecurityManager();
+    }
+    
+    private void InitializeSecurityManager() {
+		Factory<SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro.ini");
+		SecurityManager securityManager = factory.getInstance();		
+		SecurityUtils.setSecurityManager(securityManager);
     }
 
     @Override

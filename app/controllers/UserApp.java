@@ -50,17 +50,12 @@ public class UserApp extends Controller {
 	public static Result authenticate() {
 		User sourceUser = form(User.class).bindFromRequest().get();
 		
-		Factory<SecurityManager> factory = new IniSecurityManagerFactory("classpath:shiro.ini");
-		SecurityManager securityManager = factory.getInstance();
-		SecurityUtils.setSecurityManager(securityManager);
-		
-        Subject currentUser = SecurityUtils.getSubject();
+        Subject currentUser = SecurityUtils.getSubject();   
+        
         if(!currentUser.isAuthenticated()) {
         	UsernamePasswordToken token = new UsernamePasswordToken(sourceUser.loginId,
     				sourceUser.password);
-        	token.setRememberMe(sourceUser.rememberMe);
-        	
-        	Object principal = token.getPrincipal();
+        	token.setRememberMe(sourceUser.rememberMe);        
         	
         	try {
                 currentUser.login(token);
