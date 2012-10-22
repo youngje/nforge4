@@ -1,6 +1,7 @@
 import sbt._
 import Keys._
 import PlayProject._
+import com.github.play2war.plugin._
 
 object ApplicationBuild extends Build {
 
@@ -27,15 +28,22 @@ object ApplicationBuild extends Build {
       // commons-codec
       "commons-codec" % "commons-codec" % "1.2",
       // apache-mails
-      "org.apache.commons" % "commons-email" % "1.2"
+      "org.apache.commons" % "commons-email" % "1.2",
+      "commons-lang" % "commons-lang" % "2.6"
     )
-
-    val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
-      // Add your own project settings here
+    
+    val projectSettings = Play2WarPlugin.play2WarSettings ++ Seq(
+    // Add your own project settings here
       resolvers += "jgit-repository" at "http://download.eclipse.org/jgit/maven",
       resolvers += "svnkit-repository" at "http://maven.tmatesoft.com/content/repositories/releases/",
       resolvers += "scm-manager release repository" at "http://maven.scm-manager.org/nexus/content/groups/public",
       templatesImport += "models.enumeration._",
-      lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "stylesheets" ** "*.less")
+      lessEntryPoints <<= baseDirectory(_ / "app" / "assets" / "stylesheets" ** "*.less"),
+      
+      Play2WarKeys.servletVersion := "3.0"
+      // Or Play2WarKeys.servletVersion := "2.5"
     )
+    
+    val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(projectSettings: _*)
+      
 }
